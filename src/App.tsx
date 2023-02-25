@@ -2,11 +2,13 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import TestPage from "./pages/test/Test.page";
+import ErrorPage from "./pages/error/Error.page";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <div>Hello world!</div>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/test",
