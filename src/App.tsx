@@ -1,17 +1,35 @@
-import {
-  EthersAppContext,
-  EthersModalConnector,
-  // contractsContextFactory
-} from "eth-hooks/context";
+import { WagmiConfig, createClient, useNetwork } from "wagmi";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import TestPage from "./pages/test/Test.page";
 import ErrorPage from "./pages/error/Error.page";
-import { TCreateEthersModalConnector } from "eth-hooks/models";
-import { useCallback } from "react";
 
-const web3Config = {};
+import { configureChains } from "wagmi";
+import { baseGoerli } from "wagmi/chains";
+import { publicProvider } from "wagmi/providers/public";
+
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
+
+const { chains, provider, webSocketProvider } = configureChains(
+  [baseGoerli],
+  [publicProvider()] // TODO use infura
+);
+
+const client = createClient({
+  autoConnect: true,
+  provider,
+  webSocketProvider,
+});
+
+const connector = new CoinbaseWalletConnector({
+  chains,
+  options: {
+    appName: "Sugarcane",
+    jsonRpcUrl: "https://goerli.base.org",
+  },
+});
 
 const router = createBrowserRouter([
   {
@@ -26,49 +44,46 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const createLoginConnector: TCreateEthersModalConnector = useCallback(
-    (id?: string) => {
-      if (web3Config) {
-        //@ts-ignore
-        const connector = new EthersModalConnector({ ...web3Config }, id);
-        return connector;
-      }
-    },
-    [web3Config]
-  );
+  const { chain } = useNetwork();
+  const { address, isConnected } = useAccount();
+  const { connect } = useConnect({
+    connector,
+  });
+  const { disconnect } = useDisconnect();
 
   return (
-    <div>
-      <header>hello</header>
-      <Button variant="contained">Hello World</Button>
-      <Box>Pages:</Box>
+    <div style={{ textAlign: "center" }}>
+      <Box my={2}>
+        <Box>Address: {address || "No address"} </Box>
+        <Box>Connected: {isConnected ? "Yes" : "No"} </Box>
+      </Box>
+      <Button
+        sx={{ mb: 2 }}
+        variant="contained"
+        onClick={() => {
+          isConnected ? disconnect() : connect();
+        }}
+      >
+        {isConnected ? "Disconnect" : "Connect"}
+      </Button>
+      <Box>
+        <>
+          {chain && <div>Connected to {chain.name}</div>}
+          {chains && (
+            <div>Available chains: {chains.map((chain) => chain.name)}</div>
+          )}
+        </>
+      </Box>
       <RouterProvider router={router} />
     </div>
   );
 }
 
 function Web3App() {
-  // export const {
-  //   ContractsAppContext,
-  //   useAppContractsActions,
-  //   useAppContracts,
-  //   useLoadAppContracts,
-  //   useConnectAppContracts,
-  // } = contractsContextFactory<
-  //   /* the contractNames (keys) in config output */
-  //   keyof TAppConnectorList,
-  //   /* the type of the config output  */
-  //   TAppConnectorList,
-  //   /* A type that infers the value of each contractName: contract pair*/
-  //   TTypedContract<keyof TAppConnectorList, TAppConnectorList>
-  // >(contractConnectorConfig);
-
   return (
-    // <ContractsAppContext>
-    <EthersAppContext>
+    <WagmiConfig client={client}>
       <App />
-    </EthersAppContext>
-    // </ContractsAppContext>
+    </WagmiConfig>
   );
 }
 
