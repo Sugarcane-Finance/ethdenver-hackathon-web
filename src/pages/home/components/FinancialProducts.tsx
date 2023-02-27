@@ -28,7 +28,6 @@ const FinancialProducts: React.FC<{}> = () => {
             name: "SSV",
             yield: "5-10%",
             risk: "Medium",
-
             logo: ssvLogo,
           },
         ]}
