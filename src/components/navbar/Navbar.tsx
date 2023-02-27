@@ -1,7 +1,5 @@
 import React from "react";
-import { useNetwork } from "wagmi";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { connector } from "../../config/web3";
+import { useNetwork, useAccount, useConnect, useDisconnect } from "wagmi";
 
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -13,6 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import GrassIcon from "@mui/icons-material/Grass";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
+import { connector } from "../../config/web3";
 import * as blockies from "../../utils/blockies";
 
 const Navbar: React.FC<{}> = () => {
