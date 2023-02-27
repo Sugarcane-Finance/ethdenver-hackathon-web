@@ -6,11 +6,18 @@ import Divider from "@mui/material/Divider";
 
 import Modal from "../../../components/modal/Modal";
 
+import FinancialProductCard, { Product } from "./FinancialProductCard";
+
 interface Props {
   title: string;
   youtubeVideoId: string;
+  products: Product[];
 }
-const AssetClassSection: React.FC<Props> = ({ title, youtubeVideoId }) => {
+const AssetClassSection: React.FC<Props> = ({
+  title,
+  youtubeVideoId,
+  products,
+}) => {
   const [showVideo, setShowVideo] = React.useState(false);
 
   return (
@@ -42,6 +49,11 @@ const AssetClassSection: React.FC<Props> = ({ title, youtubeVideoId }) => {
           </Typography>
         </Box>
         <Divider />
+        <Box pt={4}>
+          {products.map((p, i) => {
+            return <FinancialProductCard key={i} product={p} />;
+          })}
+        </Box>
       </Box>
       <Modal open={showVideo} setOpen={setShowVideo}>
         <Box>

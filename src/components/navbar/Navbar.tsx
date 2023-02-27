@@ -32,7 +32,7 @@ const Navbar: React.FC<{}> = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ background: "#ddead1", color: "#4b6043" }}>
+    <AppBar position="fixed" sx={{ background: "#ddead1", color: "#4b6043" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <GrassIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />

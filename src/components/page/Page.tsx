@@ -7,7 +7,7 @@ const Page: React.FC<React.PropsWithChildren> = ({ children }) => {
     <Box
       flex={1}
       overflow="auto"
-      pt={6}
+      pt={12}
       sx={{ background: "#f7faf4", color: "#4b6043" }}
     >
       <Container maxWidth="xl">{children}</Container>

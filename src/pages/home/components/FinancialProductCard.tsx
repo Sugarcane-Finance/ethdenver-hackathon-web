@@ -1,44 +1,60 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
-  >
-    •
-  </Box>
-);
+export interface Product {
+  name: string;
+  yield: string;
+  risk: "High" | "Medium" | "Low";
+  logo: string;
+}
 
-function FinancialProductCard() {
+interface Props {
+  product: Product;
+}
+
+const FinancialProductCard: React.FC<Props> = ({ product }) => {
+  const { name, yield: yieldPercent, risk, logo } = product;
   return (
-    <Card sx={{ minWidth: 275 }}>
+    <Card sx={{ width: 300, cursor: "pointer" }}>
       <CardContent>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          Word of the Day
+        <Box sx={{ textAlign: "center" }} mb={2}>
+          <img
+            src={logo}
+            alt={name}
+            style={{
+              width: 200,
+              height: 200,
+              objectFit: "contain",
+            }}
+          />
+        </Box>
+        <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
+          {name}
         </Typography>
-        <Typography variant="h5" component="div">
-          be{bull}nev{bull}o{bull}lent
+        <Typography sx={{ fontSize: 18 }} color="text.secondary" gutterBottom>
+          {yieldPercent} returns
         </Typography>
-        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-          adjective
-        </Typography>
-        <Typography variant="body2">
-          well meaning and kindly.
-          <br />
-          {'"a benevolent smile"'}
+        <Typography
+          sx={{
+            mb: 1.5,
+          }}
+        >
+          Risk:{" "}
+          <span
+            style={{
+              color:
+                risk === "High" ? "green" : risk === "Medium" ? "gray" : "red",
+            }}
+          >
+            {risk}
+          </span>
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button size="small">Learn More</Button>
-      </CardActions>
     </Card>
   );
-}
+};
 
 export default FinancialProductCard;
