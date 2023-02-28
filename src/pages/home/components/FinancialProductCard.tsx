@@ -56,10 +56,10 @@ const FinancialProductCard: React.FC<Props> = ({ product }) => {
               style={{
                 color:
                   risk === "High"
-                    ? "green"
+                    ? "red"
                     : risk === "Medium"
                     ? "gray"
-                    : "red",
+                    : "green",
               }}
             >
               {risk}
