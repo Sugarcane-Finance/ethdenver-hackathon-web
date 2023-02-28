@@ -72,22 +72,20 @@ const Navbar: React.FC<{}> = () => {
           >
             Sugarcane
           </Typography>
-
           <Box
             sx={{ display: "flex", cursor: "pointer", flexGrow: 0 }}
             onClick={(e) => {
               isConnected ? handleOpenUserMenu(e) : connect();
             }}
           >
-            <AccountBalanceWalletIcon
-              sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
-            />
+            <AccountBalanceWalletIcon sx={{ display: "flex", mr: 1 }} />
             <Typography
               variant="body1"
               noWrap
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
+
                 flexGrow: 1,
                 fontWeight: 500,
                 color: "inherit",
