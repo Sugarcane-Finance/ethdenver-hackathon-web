@@ -6,13 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
 import Modal from "../../../components/modal/Modal";
-
-export interface Product {
-  name: string;
-  yield: string;
-  risk: "High" | "Medium" | "Low";
-  logo: string;
-}
+import { Product } from "../../../config/products";
 
 interface Props {
   product: Product;

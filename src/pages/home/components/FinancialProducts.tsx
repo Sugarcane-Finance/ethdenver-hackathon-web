@@ -1,9 +1,7 @@
 import React from "react";
+import products from "../../../config/products";
 
 import AssetClassSection from "./AssetClassSection";
-import aaveLogo from "../../../assets/aave-logo.png";
-import ssvLogo from "../../../assets/ssv-logo.png";
-import uniswapLogo from "../../../assets/uniswap-logo.png";
 
 const FinancialProducts: React.FC<{}> = () => {
   return (
@@ -11,38 +9,17 @@ const FinancialProducts: React.FC<{}> = () => {
       <AssetClassSection
         title="Lending"
         youtubeVideoId="aTp9er6S73M"
-        products={[
-          {
-            name: "AAVE",
-            yield: "5-10%",
-            risk: "High",
-            logo: aaveLogo,
-          },
-        ]}
+        products={products.filter((p) => p.category === "lending")}
       />
       <AssetClassSection
         title="Liquidity Providing"
         youtubeVideoId="cizLhxSKrAc"
-        products={[
-          {
-            name: "SSV",
-            yield: "5-10%",
-            risk: "Medium",
-            logo: ssvLogo,
-          },
-        ]}
+        products={products.filter((p) => p.category === "lp")}
       />
       <AssetClassSection
         title="Staking"
         youtubeVideoId="ALEMhA82UoU"
-        products={[
-          {
-            name: "Uniswap",
-            yield: "5-10%",
-            risk: "Low",
-            logo: uniswapLogo,
-          },
-        ]}
+        products={products.filter((p) => p.category === "staking")}
       />
     </>
   );

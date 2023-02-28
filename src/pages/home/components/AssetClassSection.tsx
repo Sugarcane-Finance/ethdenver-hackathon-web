@@ -1,4 +1,5 @@
 import React from "react";
+import { Product } from "../../../config/products";
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -6,7 +7,7 @@ import Divider from "@mui/material/Divider";
 
 import Modal from "../../../components/modal/Modal";
 
-import FinancialProductCard, { Product } from "./FinancialProductCard";
+import FinancialProductCard from "./FinancialProductCard";
 
 interface Props {
   title: string;
