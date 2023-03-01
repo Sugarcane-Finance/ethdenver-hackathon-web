@@ -26,7 +26,7 @@ const products: Product[] = [
     description: `Secret Shared Validators (SSV) is the first secure and robust way to split an Ethereum validator key between non-trusting nodes run by operators. The nodes do not need to trust each other to carry out their validator duties, and a certain number can be offline without affecting validator performance. No single node can sign data on behalf of a validator, yet not all are needed to create a valid signature, adding fault tolerance to the staking ecosystem. The result is a reliable, decentralized, secure staking solution for Ethereum. Learn more about how SSV works under the hood in the SSV Tech Deep Dive.`,
     risk: "Medium",
     logo: ssvLogo,
-    category: "lp",
+    category: "staking",
   },
   {
     name: "Uniswap",
@@ -34,7 +34,7 @@ const products: Product[] = [
     description: `Uniswap is a decentralized cryptocurrency exchange that uses a set of smart contracts to execute trades on its exchange. It's an open source project and falls into the category of a DeFi product because it uses smart contracts to facilitate trades.`,
     risk: "Low",
     logo: uniswapLogo,
-    category: "staking",
+    category: "lp",
   },
 ];
 
