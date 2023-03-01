@@ -6,6 +6,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
+import Grid from "@mui/material/Grid";
 import {
   Divider,
   FormControl,
@@ -13,9 +14,12 @@ import {
   InputLabel,
   OutlinedInput,
 } from "@mui/material";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
 
 import Modal from "../../../components/modal/Modal";
 import { Product } from "../../../config/products";
+import encryptCardDetails from "../../../utils/encryptCardDetails";
+import saveCardToCircle from "../../../utils/saveCardToCircle";
 
 const amountIsValid = (amount: string) => {
   if (amount.trim() === "") {
@@ -34,15 +38,39 @@ interface Props {
 
 const FinancialProductCard: FC<Props> = ({ product }) => {
   const [showModal, setShowModal] = useState(false);
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState("1000");
+  const [ccNumber, setCcNumber] = useState("4007400000000007");
+  const [cvv, setCvv] = useState("123");
+  const [date, setDate] = useState("12/2026");
   const [isSubmittingAmount, setIsSubmittingAmount] = useState(false);
   const { name, yield: yieldPercent, description, risk, logo } = product;
 
   const handleSubmit = async () => {
-    if (amount.trim() === "") {
+    if (!amountIsValid(amount)) {
       return;
     }
     setIsSubmittingAmount(true);
+    try {
+      const encryptor = await encryptCardDetails();
+      const res = await encryptor({
+        number: ccNumber,
+        cvv,
+      });
+
+      console.log({ res });
+
+      const cardRes = await saveCardToCircle({
+        keyId: res.keyId,
+        encryptedData: res.encryptedData,
+      });
+
+      console.log({ cardRes });
+
+      // TODO make payment on card id
+    } catch (e: any) {
+      window.alert(e?.message || e);
+    }
+    setIsSubmittingAmount(false);
   };
 
   return (
@@ -134,6 +162,62 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
                 }}
               />
             </FormControl>
+
+            <Divider sx={{ mt: 2, mb: 4 }} />
+
+            <FormControl fullWidth sx={{ maxWidth: "300px", mb: 2 }}>
+              <InputLabel htmlFor="outlined-adornment-amount">
+                Card Number
+              </InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-amount"
+                startAdornment={
+                  <InputAdornment position="start">
+                    <CreditCardIcon />
+                  </InputAdornment>
+                }
+                label="Card Number"
+                value={ccNumber}
+                disabled={isSubmittingAmount}
+                onChange={(e) => {
+                  setCcNumber(e.target.value);
+                }}
+              />
+            </FormControl>
+            <Box sx={{ maxWidth: "300px", margin: "auto" }}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel htmlFor="outlined-adornment-amount">
+                      Expiry Date
+                    </InputLabel>
+                    <OutlinedInput
+                      label="Expiry Date"
+                      value={date}
+                      disabled={isSubmittingAmount}
+                      onChange={(e) => {
+                        setDate(e.target.value);
+                      }}
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6}>
+                  <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel htmlFor="outlined-adornment-amount">
+                      CVV
+                    </InputLabel>
+                    <OutlinedInput
+                      label="CVV"
+                      value={cvv}
+                      disabled={isSubmittingAmount}
+                      onChange={(e) => {
+                        setCvv(e.target.value);
+                      }}
+                    />
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Box>
             <Box>
               <Button
                 variant="contained"
