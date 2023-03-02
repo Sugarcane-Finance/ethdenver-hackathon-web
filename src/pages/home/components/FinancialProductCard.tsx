@@ -1,4 +1,6 @@
 import { useState, FC } from "react";
+import { useSignMessage } from "wagmi";
+import { verifyMessage } from "ethers/lib/utils";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -15,11 +17,15 @@ import {
   OutlinedInput,
 } from "@mui/material";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import Modal from "../../../components/modal/Modal";
 import { Product } from "../../../config/products";
 import encryptCardDetails from "../../../utils/encryptCardDetails";
 import saveCardToCircle from "../../../utils/saveCardToCircle";
+import createCirclePayment from "../../../utils/createCirclePayment";
+
+const ignoreBackend = true;
 
 const amountIsValid = (amount: string) => {
   if (amount.trim() === "") {
@@ -38,12 +44,26 @@ interface Props {
 
 const FinancialProductCard: FC<Props> = ({ product }) => {
   const [showModal, setShowModal] = useState(false);
+  const [successfullyInvested, setSuccessfullyInvested] = useState(false);
   const [amount, setAmount] = useState("1000");
   const [ccNumber, setCcNumber] = useState("4007400000000007");
   const [cvv, setCvv] = useState("123");
   const [date, setDate] = useState("12/2026");
   const [isSubmittingAmount, setIsSubmittingAmount] = useState(false);
   const { name, yield: yieldPercent, description, risk, logo } = product;
+  const { data, error, isLoading, signMessage } = useSignMessage({
+    onSuccess(data, variables) {
+      // Verify signature when sign message succeeds
+      const address = verifyMessage(variables.message, data);
+      console.log({ address });
+      setSuccessfullyInvested(true);
+      setIsSubmittingAmount(false);
+    },
+    onError(error) {
+      window.alert(error?.message || error);
+      setIsSubmittingAmount(false);
+    },
+  });
 
   const handleSubmit = async () => {
     if (!amountIsValid(amount)) {
@@ -51,26 +71,35 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
     }
     setIsSubmittingAmount(true);
     try {
-      const encryptor = await encryptCardDetails();
-      const res = await encryptor({
-        number: ccNumber,
-        cvv,
-      });
+      if (!ignoreBackend) {
+        const encryptor = await encryptCardDetails();
+        const encryptRes = await encryptor({
+          number: ccNumber,
+          cvv,
+        });
 
-      console.log({ res });
+        console.log({ encryptRes });
 
-      const cardRes = await saveCardToCircle({
-        keyId: res.keyId,
-        encryptedData: res.encryptedData,
-      });
+        const cardRes = await saveCardToCircle({
+          keyId: encryptRes.keyId,
+          encryptedData: encryptRes.encryptedData,
+        });
 
-      console.log({ cardRes });
+        console.log({ cardRes });
 
-      // TODO make payment on card id
+        const paymentRes = await createCirclePayment({
+          amount,
+          cardId: cardRes.id,
+        });
+
+        console.log({ paymentRes });
+      }
+
+      signMessage({ message: "temp\nmessage\ntest: 0001" });
     } catch (e: any) {
       window.alert(e?.message || e);
+      setIsSubmittingAmount(false);
     }
-    setIsSubmittingAmount(false);
   };
 
   return (
@@ -144,94 +173,107 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
           <Typography textAlign={"center"} variant="body1" mt={2} mb={10}>
             {description}
           </Typography>
-          <Box sx={{ textAlign: "center" }} mb={2}>
-            <FormControl fullWidth sx={{ maxWidth: "300px", mb: 2 }}>
-              <InputLabel htmlFor="outlined-adornment-amount">
-                Amount
-              </InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-amount"
-                startAdornment={
-                  <InputAdornment position="start">$</InputAdornment>
-                }
-                label="Amount"
-                value={amount}
-                disabled={isSubmittingAmount}
-                onChange={(e) => {
-                  setAmount(e.target.value);
-                }}
-              />
-            </FormControl>
 
-            <Divider sx={{ mt: 2, mb: 4 }} />
+          {successfullyInvested ? (
+            <Box textAlign="center" mt={-5}>
+              <CheckCircleIcon sx={{ color: "green", fontSize: "135px" }} />
+              <Typography sx={{ fontSize: "24px", mb: 2 }}>
+                Congratulations!
+              </Typography>
+              <Typography sx={{ fontSize: "18px" }}>
+                Your order has been placed and will be available soon.
+              </Typography>
+            </Box>
+          ) : (
+            <Box sx={{ textAlign: "center" }} mb={2}>
+              <FormControl fullWidth sx={{ maxWidth: "300px", mb: 2 }}>
+                <InputLabel htmlFor="outlined-adornment-amount">
+                  Amount
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-amount"
+                  startAdornment={
+                    <InputAdornment position="start">$</InputAdornment>
+                  }
+                  label="Amount"
+                  value={amount}
+                  disabled={isSubmittingAmount}
+                  onChange={(e) => {
+                    setAmount(e.target.value);
+                  }}
+                />
+              </FormControl>
 
-            <FormControl fullWidth sx={{ maxWidth: "300px", mb: 2 }}>
-              <InputLabel htmlFor="outlined-adornment-amount">
-                Card Number
-              </InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-amount"
-                startAdornment={
-                  <InputAdornment position="start">
-                    <CreditCardIcon />
-                  </InputAdornment>
-                }
-                label="Card Number"
-                value={ccNumber}
-                disabled={isSubmittingAmount}
-                onChange={(e) => {
-                  setCcNumber(e.target.value);
-                }}
-              />
-            </FormControl>
-            <Box sx={{ maxWidth: "300px", margin: "auto" }}>
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <InputLabel htmlFor="outlined-adornment-amount">
-                      Expiry Date
-                    </InputLabel>
-                    <OutlinedInput
-                      label="Expiry Date"
-                      value={date}
-                      disabled={isSubmittingAmount}
-                      onChange={(e) => {
-                        setDate(e.target.value);
-                      }}
-                    />
-                  </FormControl>
+              <Divider sx={{ mt: 2, mb: 4 }} />
+
+              <FormControl fullWidth sx={{ maxWidth: "300px", mb: 2 }}>
+                <InputLabel htmlFor="outlined-adornment-amount">
+                  Card Number
+                </InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-amount"
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <CreditCardIcon />
+                    </InputAdornment>
+                  }
+                  label="Card Number"
+                  value={ccNumber}
+                  disabled={isSubmittingAmount}
+                  onChange={(e) => {
+                    setCcNumber(e.target.value);
+                  }}
+                />
+              </FormControl>
+              <Box sx={{ maxWidth: "300px", margin: "auto" }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                      <InputLabel htmlFor="outlined-adornment-amount">
+                        Expiry Date
+                      </InputLabel>
+                      <OutlinedInput
+                        label="Expiry Date"
+                        value={date}
+                        disabled={isSubmittingAmount}
+                        onChange={(e) => {
+                          setDate(e.target.value);
+                        }}
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth sx={{ mb: 2 }}>
+                      <InputLabel htmlFor="outlined-adornment-amount">
+                        CVV
+                      </InputLabel>
+                      <OutlinedInput
+                        label="CVV"
+                        value={cvv}
+                        disabled={isSubmittingAmount}
+                        onChange={(e) => {
+                          setCvv(e.target.value);
+                        }}
+                      />
+                    </FormControl>
+                  </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                  <FormControl fullWidth sx={{ mb: 2 }}>
-                    <InputLabel htmlFor="outlined-adornment-amount">
-                      CVV
-                    </InputLabel>
-                    <OutlinedInput
-                      label="CVV"
-                      value={cvv}
-                      disabled={isSubmittingAmount}
-                      onChange={(e) => {
-                        setCvv(e.target.value);
-                      }}
-                    />
-                  </FormControl>
-                </Grid>
-              </Grid>
+              </Box>
+              <Box>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  size="large"
+                  sx={{ maxWidth: "300px", height: "56px" }}
+                  disabled={!amountIsValid(amount) || isSubmittingAmount}
+                  onClick={handleSubmit}
+                >
+                  Invest
+                </Button>
+              </Box>
+              {isSubmittingAmount ? <CircularProgress sx={{ mt: 2 }} /> : null}
             </Box>
-            <Box>
-              <Button
-                variant="contained"
-                fullWidth
-                size="large"
-                sx={{ maxWidth: "300px", height: "56px" }}
-                disabled={!amountIsValid(amount) || isSubmittingAmount}
-                onClick={handleSubmit}
-              >
-                Invest
-              </Button>
-            </Box>
-            {isSubmittingAmount ? <CircularProgress sx={{ mt: 2 }} /> : null}
-          </Box>
+          )}
         </Box>
       </Modal>
     </>

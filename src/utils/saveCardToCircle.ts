@@ -1,8 +1,7 @@
 interface Card {
-  data: {
-    keyId: string;
-    publicKey: string;
-  };
+  id: string;
+  verification: any;
+  // TODO bring in other fields
 }
 
 interface SaveCardToCircleParams {
