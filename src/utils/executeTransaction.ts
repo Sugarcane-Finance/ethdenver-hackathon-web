@@ -1,3 +1,5 @@
+import config from "../config";
+
 interface ExecuteTransactionParams {
   address: string;
   transaction: string;
@@ -5,13 +7,15 @@ interface ExecuteTransactionParams {
 const executeTransaction = async (
   params: ExecuteTransactionParams
 ): Promise<void> => {
-  await fetch("http://localhost:8080/execute-transaction", {
+  const result = await fetch(config.apiUrl("/execute-transaction"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(params),
-  }).then((response) => response.json());
+  }).then((response) => {
+    return response.json();
+  });
 };
 
 export default executeTransaction;

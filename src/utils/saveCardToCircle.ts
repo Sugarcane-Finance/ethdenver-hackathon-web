@@ -1,7 +1,8 @@
+import config from "../config";
+
 interface Card {
   id: string;
   verification: any;
-  // TODO bring in other fields
 }
 
 interface SaveCardToCircleParams {
@@ -12,7 +13,7 @@ const saveCardToCircle = async ({
   keyId,
   encryptedData,
 }: SaveCardToCircleParams): Promise<Card> => {
-  const data: Card = await fetch("http://localhost:8080/create-card", {
+  const data: Card = await fetch(config.apiUrl("/create-card"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

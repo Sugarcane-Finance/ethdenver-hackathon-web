@@ -1,3 +1,5 @@
+import config from "../config";
+
 interface PCIPublicKeyResponse {
   data: {
     keyId: string;
@@ -6,7 +8,7 @@ interface PCIPublicKeyResponse {
 }
 const getPCIPublicKey = async (): Promise<PCIPublicKeyResponse> => {
   const data: PCIPublicKeyResponse = await fetch(
-    "http://localhost:8080/pci-public-key"
+    config.apiUrl("/pci-public-key")
   ).then((response) => response.json());
   return data;
 };

@@ -1,3 +1,5 @@
+import config from "../config";
+
 interface Card {
   data: {
     keyId: string;
@@ -13,7 +15,7 @@ interface CreateCirclePaymentParams {
 const createCirclePayment = async (
   params: CreateCirclePaymentParams
 ): Promise<Card> => {
-  const data: Card = await fetch("http://localhost:8080/create-payment", {
+  const data: Card = await fetch(config.apiUrl("/create-payment"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
