@@ -8,6 +8,7 @@ interface Card {
 interface CreateCirclePaymentParams {
   amount: string;
   cardId: string;
+  address: string;
 }
 const createCirclePayment = async (
   params: CreateCirclePaymentParams

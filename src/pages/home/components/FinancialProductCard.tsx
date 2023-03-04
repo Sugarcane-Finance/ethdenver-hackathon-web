@@ -1,5 +1,5 @@
 import { useState, FC } from "react";
-import { useSignMessage } from "wagmi";
+import { useAccount, useConnect, useSignMessage } from "wagmi";
 import { verifyMessage } from "ethers/lib/utils";
 
 import Box from "@mui/material/Box";
@@ -20,29 +20,23 @@ import CreditCardIcon from "@mui/icons-material/CreditCard";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import Modal from "../../../components/modal/Modal";
+import { connector } from "../../../config/web3";
 import { Product } from "../../../config/products";
+import amountIsValid from "../../../utils/amountIsValid";
 import encryptCardDetails from "../../../utils/encryptCardDetails";
 import saveCardToCircle from "../../../utils/saveCardToCircle";
 import createCirclePayment from "../../../utils/createCirclePayment";
-
-const ignoreBackend = true;
-
-const amountIsValid = (amount: string) => {
-  if (amount.trim() === "") {
-    return false;
-  } else if (isNaN(Number(amount))) {
-    return false;
-  } else if (Number(amount) <= 0) {
-    return false;
-  }
-  return true;
-};
+import executeTransaction from "../../../utils/executeTransaction";
 
 interface Props {
   product: Product;
 }
 
 const FinancialProductCard: FC<Props> = ({ product }) => {
+  const { address, isConnected } = useAccount();
+  const { connect } = useConnect({
+    connector,
+  });
   const [showModal, setShowModal] = useState(false);
   const [successfullyInvested, setSuccessfullyInvested] = useState(false);
   const [amount, setAmount] = useState("1000");
@@ -51,13 +45,18 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
   const [date, setDate] = useState("12/2026");
   const [isSubmittingAmount, setIsSubmittingAmount] = useState(false);
   const { name, yield: yieldPercent, description, risk, logo } = product;
-  const { data, error, isLoading, signMessage } = useSignMessage({
-    onSuccess(data, variables) {
-      // Verify signature when sign message succeeds
-      const address = verifyMessage(variables.message, data);
-      console.log({ address });
-      setSuccessfullyInvested(true);
-      setIsSubmittingAmount(false);
+  const { signMessage } = useSignMessage({
+    async onSuccess(data, variables) {
+      const address_ = verifyMessage(variables.message, data);
+      console.log({ address, address_, variables });
+      try {
+        await executeTransaction({ address: address || "", transaction: data });
+        setSuccessfullyInvested(true);
+        setIsSubmittingAmount(false);
+      } catch (e: any) {
+        window.alert(e?.message || e);
+        setIsSubmittingAmount(false);
+      }
     },
     onError(error) {
       window.alert(error?.message || error);
@@ -71,29 +70,28 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
     }
     setIsSubmittingAmount(true);
     try {
-      if (!ignoreBackend) {
-        const encryptor = await encryptCardDetails();
-        const encryptRes = await encryptor({
-          number: ccNumber,
-          cvv,
-        });
+      const encryptor = await encryptCardDetails();
+      const encryptRes = await encryptor({
+        number: ccNumber,
+        cvv,
+      });
 
-        console.log({ encryptRes });
+      console.log({ encryptRes });
 
-        const cardRes = await saveCardToCircle({
-          keyId: encryptRes.keyId,
-          encryptedData: encryptRes.encryptedData,
-        });
+      const cardRes = await saveCardToCircle({
+        keyId: encryptRes.keyId,
+        encryptedData: encryptRes.encryptedData,
+      });
 
-        console.log({ cardRes });
+      console.log({ cardRes });
 
-        const paymentRes = await createCirclePayment({
-          amount,
-          cardId: cardRes.id,
-        });
+      const paymentRes = await createCirclePayment({
+        amount,
+        cardId: cardRes.id,
+        address: address || "",
+      });
 
-        console.log({ paymentRes });
-      }
+      console.log({ paymentRes });
 
       signMessage({ message: "temp\nmessage\ntest: 0001" });
     } catch (e: any) {
@@ -268,7 +266,7 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
                   disabled={!amountIsValid(amount) || isSubmittingAmount}
                   onClick={handleSubmit}
                 >
-                  Invest
+                  Buy
                 </Button>
               </Box>
               {isSubmittingAmount ? <CircularProgress sx={{ mt: 2 }} /> : null}
