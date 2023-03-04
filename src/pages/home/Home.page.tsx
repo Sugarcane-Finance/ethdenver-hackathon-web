@@ -4,17 +4,16 @@ import { useAccount } from "wagmi";
 import Page from "../../components/page/Page";
 
 import Header from "./components/Header";
+import Portfolio from "./components/Portfolio";
 import FinancialProducts from "./components/FinancialProducts";
 
 const HomePage: React.FC<{}> = () => {
-  const { address, isConnected } = useAccount();
-
-  console.log({ address, isConnected });
+  const { isConnected } = useAccount();
 
   return (
     <Page>
       <Header />
-      {/* <Portfolio /> */}
+      {isConnected && <Portfolio />}
       <FinancialProducts />
     </Page>
   );
