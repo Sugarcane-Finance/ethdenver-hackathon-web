@@ -4,8 +4,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
+import BadgeSection from "./BadgeSection";
 
-const FinancialProducts: React.FC<{}> = () => {
+const Portfolio: React.FC<{}> = () => {
   const [products, setProducts] = React.useState([]);
 
   return (
@@ -55,30 +56,7 @@ const FinancialProducts: React.FC<{}> = () => {
             </Box>
           </Grid>
           <Grid item xs={3}>
-            <Box mb={8}>
-              <Box
-                mb={1}
-                display="flex"
-                justifyContent="space-between"
-                alignItems="baseline"
-              >
-                <Typography
-                  variant="h4"
-                  sx={{
-                    fontWeight: 600,
-                  }}
-                >
-                  My Badges
-                </Typography>
-              </Box>
-
-              <Divider />
-              {/* <Box pt={4}>
-          {products.map((p, i) => {
-            return <FinancialProductCard key={i} product={p} />;
-          })}
-        </Box> */}
-            </Box>
+            <BadgeSection />
           </Grid>
         </Grid>
       </Box>
@@ -86,4 +64,4 @@ const FinancialProducts: React.FC<{}> = () => {
   );
 };
 
-export default FinancialProducts;
+export default Portfolio;
