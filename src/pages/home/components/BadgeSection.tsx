@@ -1,11 +1,13 @@
 import { useAccount, useContractRead } from "wagmi";
 import React from "react";
+
 import Stack from "@mui/material/Stack";
-import products from "../../../config/products";
+import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
-import Grid from "@mui/material/Grid";
+
+import products from "../../../config/products";
 import badgeAbi from "../../../contracts/badgeAbi";
 import config from "../../../config";
 
@@ -14,7 +16,7 @@ const badges: {
 } = {
   0: {
     name: "Market Maker",
-    description: "LP",
+    description: "Made your first investment by providing liquidity!",
     image:
       "https://sugarcane.infura-ipfs.io/ipfs/QmXtYiixkXAxKWqpqCEjnqWs5zZhFHQ2ntShZ28HwfwThg",
   },
@@ -35,7 +37,12 @@ const badges: {
 const BadgeSection: React.FC<{}> = () => {
   const { address } = useAccount();
 
-  const { data, isError, isLoading, error } = useContractRead({
+  const {
+    data: badgeBalances,
+    isError,
+    isLoading,
+    error,
+  } = useContractRead({
     //@ts-ignore
     address: config.badgesSmartContractAddress,
     abi: badgeAbi,
@@ -46,7 +53,7 @@ const BadgeSection: React.FC<{}> = () => {
     ],
   });
 
-  console.log({ data, isError, isLoading, error });
+  console.log({ badgeBalances, isError, isLoading, error });
 
   return (
     <Box mb={8}>
@@ -68,22 +75,69 @@ const BadgeSection: React.FC<{}> = () => {
 
       <Divider />
       <Box pt={4}>
-        <Stack direction={"row"}>
-          {Object.keys(badges).map((badgeId) => {
-            const badge = badges[Number(badgeId)];
-            return (
-              <Box key={badgeId} sx={{ maxWidth: "120px" }}>
-                <img
-                  src={badge.image}
-                  style={{
-                    width: "100%",
-                    opacity: 0.2,
-                  }}
-                  alt={badge.name}
-                />
-              </Box>
-            );
-          })}
+        <Stack direction={"row"} flexWrap="wrap">
+          {Object.keys(badges)
+            .sort((a, b) => {
+              const aId = Number(a);
+              const aBalance = badgeBalances && (badgeBalances as any[])[aId];
+              const aOwns = aBalance && aBalance?._hex !== "0x00";
+
+              const bId = Number(b);
+              const bBalance = badgeBalances && (badgeBalances as any[])[bId];
+              const bOwns = bBalance && bBalance?._hex !== "0x00";
+
+              if (aOwns && !bOwns) {
+                return -1;
+              } else if (bOwns && !aOwns) {
+                return 1;
+              } else {
+                return bId > aId ? -1 : 1;
+              }
+            })
+            .map((badgeId) => {
+              const id = Number(badgeId);
+              const badge = badges[id];
+              const balance = badgeBalances && (badgeBalances as any[])[id];
+              const owns = balance && balance?._hex !== "0x00";
+
+              return (
+                <Tooltip
+                  key={badgeId}
+                  title={badge.description}
+                  sx={{ fontSize: "24px" }}
+                >
+                  <Box
+                    sx={{
+                      maxWidth: {
+                        xs: "80px",
+                        sm: "80px",
+                        md: "100px",
+                        lg: "100px",
+                      },
+                      cursor: "default",
+                    }}
+                  >
+                    <img
+                      src={badge.image}
+                      style={{
+                        width: "100%",
+                        ...(owns ? {} : { opacity: 0.2 }),
+                      }}
+                      alt={badge.name}
+                    />
+                    <Typography
+                      sx={{
+                        textAlign: "center",
+                        fontSize: "14px",
+                        ...(owns ? {} : { opacity: 0.2 }),
+                      }}
+                    >
+                      {badge.name}
+                    </Typography>
+                  </Box>
+                </Tooltip>
+              );
+            })}
         </Stack>
       </Box>
     </Box>
