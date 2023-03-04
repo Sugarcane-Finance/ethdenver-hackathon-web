@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 import Modal from "../../../components/modal/Modal";
 import { connector } from "../../../config/web3";
@@ -34,7 +35,7 @@ interface Props {
 
 const FinancialProductCard: FC<Props> = ({ product }) => {
   const { address, isConnected } = useAccount();
-  const { connect } = useConnect({
+  const { connect, isLoading: isConnectingWallet } = useConnect({
     connector,
   });
   const [showModal, setShowModal] = useState(false);
@@ -204,72 +205,101 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
 
               <Divider sx={{ mt: 2, mb: 4 }} />
 
-              <FormControl fullWidth sx={{ maxWidth: "300px", mb: 2 }}>
-                <InputLabel htmlFor="outlined-adornment-amount">
-                  Card Number
-                </InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-amount"
-                  startAdornment={
-                    <InputAdornment position="start">
-                      <CreditCardIcon />
-                    </InputAdornment>
-                  }
-                  label="Card Number"
-                  value={ccNumber}
-                  disabled={isSubmittingAmount}
-                  onChange={(e) => {
-                    setCcNumber(e.target.value);
-                  }}
-                />
-              </FormControl>
-              <Box sx={{ maxWidth: "300px", margin: "auto" }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                      <InputLabel htmlFor="outlined-adornment-amount">
-                        Expiry Date
-                      </InputLabel>
-                      <OutlinedInput
-                        label="Expiry Date"
-                        value={date}
-                        disabled={isSubmittingAmount}
-                        onChange={(e) => {
-                          setDate(e.target.value);
-                        }}
+              {isConnected ? (
+                <>
+                  <FormControl fullWidth sx={{ maxWidth: "300px", mb: 2 }}>
+                    <InputLabel htmlFor="outlined-adornment-amount">
+                      Card Number
+                    </InputLabel>
+                    <OutlinedInput
+                      id="outlined-adornment-amount"
+                      startAdornment={
+                        <InputAdornment position="start">
+                          <CreditCardIcon />
+                        </InputAdornment>
+                      }
+                      label="Card Number"
+                      value={ccNumber}
+                      disabled={isSubmittingAmount}
+                      onChange={(e) => {
+                        setCcNumber(e.target.value);
+                      }}
+                    />
+                  </FormControl>
+                  <Box sx={{ maxWidth: "300px", margin: "auto" }}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={6}>
+                        <FormControl fullWidth sx={{ mb: 2 }}>
+                          <InputLabel htmlFor="outlined-adornment-amount">
+                            Expiry Date
+                          </InputLabel>
+                          <OutlinedInput
+                            label="Expiry Date"
+                            value={date}
+                            disabled={isSubmittingAmount}
+                            onChange={(e) => {
+                              setDate(e.target.value);
+                            }}
+                          />
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <FormControl fullWidth sx={{ mb: 2 }}>
+                          <InputLabel htmlFor="outlined-adornment-amount">
+                            CVV
+                          </InputLabel>
+                          <OutlinedInput
+                            label="CVV"
+                            value={cvv}
+                            disabled={isSubmittingAmount}
+                            onChange={(e) => {
+                              setCvv(e.target.value);
+                            }}
+                          />
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  <Box>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      size="large"
+                      sx={{ maxWidth: "300px", height: "56px" }}
+                      disabled={!amountIsValid(amount) || isSubmittingAmount}
+                      onClick={handleSubmit}
+                    >
+                      Buy
+                    </Button>
+                  </Box>
+                  {isSubmittingAmount ? (
+                    <CircularProgress sx={{ mt: 2 }} />
+                  ) : null}
+                </>
+              ) : (
+                <>
+                  <Box sx={{ maxWidth: "300px", margin: "auto" }}>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      size="large"
+                      sx={{ maxWidth: "300px", height: "56px" }}
+                      disabled={!amountIsValid(amount) || isSubmittingAmount}
+                      onClick={() => {
+                        connect();
+                      }}
+                    >
+                      <AccountBalanceWalletIcon
+                        sx={{ display: "flex", mr: 1 }}
                       />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                      <InputLabel htmlFor="outlined-adornment-amount">
-                        CVV
-                      </InputLabel>
-                      <OutlinedInput
-                        label="CVV"
-                        value={cvv}
-                        disabled={isSubmittingAmount}
-                        onChange={(e) => {
-                          setCvv(e.target.value);
-                        }}
-                      />
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Box>
-              <Box>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  size="large"
-                  sx={{ maxWidth: "300px", height: "56px" }}
-                  disabled={!amountIsValid(amount) || isSubmittingAmount}
-                  onClick={handleSubmit}
-                >
-                  Buy
-                </Button>
-              </Box>
-              {isSubmittingAmount ? <CircularProgress sx={{ mt: 2 }} /> : null}
+                      Connect Wallet
+                    </Button>
+                  </Box>
+                  {isConnectingWallet ? (
+                    <CircularProgress sx={{ mt: 2 }} />
+                  ) : null}
+                </>
+              )}
             </Box>
           )}
         </Box>
