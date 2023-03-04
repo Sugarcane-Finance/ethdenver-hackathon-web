@@ -103,7 +103,16 @@ const BadgeSection: React.FC<{}> = () => {
                 <Tooltip
                   key={badgeId}
                   title={badge.description}
-                  sx={{ fontSize: "24px" }}
+                  PopperProps={{
+                    sx: {
+                      "> div": {
+                        fontSize: "18px",
+                        textAlign: "center",
+                        padding: 2,
+                        letterSpacing: "1px",
+                      },
+                    },
+                  }}
                 >
                   <Box
                     sx={{
