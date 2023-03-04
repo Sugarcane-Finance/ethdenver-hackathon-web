@@ -104,7 +104,7 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
   return (
     <>
       <Card
-        sx={{ width: 300, cursor: "pointer", pt: 2 }}
+        sx={{ width: 300, cursor: "pointer", pt: 2, textAlign: "center" }}
         onClick={() => setShowModal(true)}
       >
         <CardContent>

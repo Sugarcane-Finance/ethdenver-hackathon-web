@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 import Page from "../../components/page/Page";
 
 import Header from "./components/Header";
-import Portfolio from "./components/Portfolio";
+import UserProfile from "./components/UserProfile";
 import FinancialProducts from "./components/FinancialProducts";
 
 const HomePage: React.FC<{}> = () => {
@@ -13,7 +13,7 @@ const HomePage: React.FC<{}> = () => {
   return (
     <Page>
       <Header />
-      {isConnected && <Portfolio />}
+      {isConnected && <UserProfile />}
       <FinancialProducts />
     </Page>
   );

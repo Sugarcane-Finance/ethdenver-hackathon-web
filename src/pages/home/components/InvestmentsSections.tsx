@@ -1,11 +1,17 @@
 import React from "react";
-import products from "../../../config/products";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+import InvestmentCard, { Investment } from "./InvestmentCard";
 
-const Portfolio: React.FC<{}> = () => {
-  const [products] = React.useState([]);
+const InvestmentsSections: React.FC<{}> = () => {
+  const [investments] = React.useState<Investment[]>([
+    {
+      chainId: 1,
+      protocolId: 1,
+      initialAmountUsd: 1000,
+    },
+  ]);
 
   return (
     <Box mb={8}>
@@ -25,7 +31,7 @@ const Portfolio: React.FC<{}> = () => {
         </Typography>
       </Box>
       <Divider />
-      {products.length === 0 ? (
+      {investments.length === 0 ? (
         <>
           <Typography
             sx={{
@@ -39,8 +45,13 @@ const Portfolio: React.FC<{}> = () => {
           </Typography>
         </>
       ) : undefined}
+      <Box pt={"32px"}>
+        {investments.map((investment, i) => {
+          return <InvestmentCard key={i} investment={investment} />;
+        })}
+      </Box>
     </Box>
   );
 };
 
-export default Portfolio;
+export default InvestmentsSections;

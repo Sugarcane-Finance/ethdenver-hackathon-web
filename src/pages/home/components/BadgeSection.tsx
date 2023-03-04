@@ -7,7 +7,6 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 
-import products from "../../../config/products";
 import badgeAbi from "../../../contracts/badgeAbi";
 import config from "../../../config";
 
