@@ -4,6 +4,7 @@ import { useAccount, useContractRead } from "wagmi";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
 
 import InvestmentCard from "./InvestmentCard";
 
@@ -23,6 +24,7 @@ const InvestmentsSections: React.FC<{}> = () => {
     abi: sugarcaneInvestmentRegistryAbi,
     functionName: "investments",
     args: [address],
+    watch: true,
   });
 
   const investments = (_investments || []) as { _hex: string }[];
@@ -41,7 +43,7 @@ const InvestmentsSections: React.FC<{}> = () => {
             fontWeight: 600,
           }}
         >
-          My Assets
+          My Purchases
         </Typography>
       </Box>
       <Divider />
@@ -59,11 +61,11 @@ const InvestmentsSections: React.FC<{}> = () => {
           </Typography>
         </>
       ) : undefined}
-      <Box pt={"32px"}>
+      <Stack pt={"32px"} spacing={2} direction="row" flexWrap="wrap">
         {investments.map((investment, i) => {
           return <InvestmentCard key={i} investmentId={investment._hex} />;
         })}
-      </Box>
+      </Stack>
     </Box>
   );
 };

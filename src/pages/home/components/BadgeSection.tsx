@@ -45,6 +45,7 @@ const BadgeSection: React.FC<{}> = () => {
       Array(badgeNames.length).fill(address),
       badgeNames.map((n) => (badgeIds as any)[n]),
     ],
+    watch: true,
   });
 
   return (

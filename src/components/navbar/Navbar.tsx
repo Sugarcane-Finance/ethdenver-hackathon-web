@@ -94,7 +94,7 @@ const Navbar: React.FC<{}> = () => {
             >
               {isConnected
                 ? `...${address?.substring(address?.length - 8)}`
-                : "Connect Wallet"}
+                : "Connect Coinbase Wallet"}
             </Typography>
             {address ? (
               <img

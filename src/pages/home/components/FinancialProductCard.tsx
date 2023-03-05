@@ -146,6 +146,12 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
         setOpen={(o: boolean) => {
           if (isSubmittingAmount) return;
           setShowModal(o);
+          if (o === false) {
+            setTimeout(() => {
+              setAmount("");
+              setSuccessfullyInvested(false);
+            }, 2000);
+          }
         }}
       >
         <Box>
