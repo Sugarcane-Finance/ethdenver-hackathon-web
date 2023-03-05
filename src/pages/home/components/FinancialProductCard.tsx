@@ -1,5 +1,6 @@
 import { useState, FC } from "react";
 import { useAccount, useConnect, useSignMessage } from "wagmi";
+import Confetti from "react-confetti";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -39,7 +40,7 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
   });
   const [showModal, setShowModal] = useState(false);
   const [successfullyInvested, setSuccessfullyInvested] = useState(false);
-  const [amount, setAmount] = useState("1000");
+  const [amount, setAmount] = useState("");
   const [ccNumber, setCcNumber] = useState("4007400000000007");
   const [cvv, setCvv] = useState("123");
   const [date, setDate] = useState("12/2026");
@@ -154,6 +155,7 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
           }
         }}
       >
+        {successfullyInvested && <Confetti />}
         <Box>
           <Box sx={{ textAlign: "center" }} mb={2}>
             <img
@@ -206,11 +208,28 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
 
               <Divider sx={{ mt: 2, mb: 4 }} />
 
-              {isConnected ? (
+              {!product.available ? (
+                <>
+                  <Box sx={{ maxWidth: "300px", margin: "auto" }}>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      size="large"
+                      sx={{ maxWidth: "300px", height: "56px" }}
+                      disabled
+                    >
+                      Coming Soon!
+                    </Button>
+                  </Box>
+                  {isConnectingWallet ? (
+                    <CircularProgress sx={{ mt: 2 }} />
+                  ) : null}
+                </>
+              ) : isConnected ? (
                 <>
                   <FormControl fullWidth sx={{ maxWidth: "300px", mb: 2 }}>
                     <InputLabel htmlFor="outlined-adornment-amount">
-                      Card Number
+                      Card Number (Sandbox)
                     </InputLabel>
                     <OutlinedInput
                       id="outlined-adornment-amount"
@@ -219,7 +238,7 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
                           <CreditCardIcon />
                         </InputAdornment>
                       }
-                      label="Card Number"
+                      label="Card Number (Sandbox)"
                       value={ccNumber}
                       disabled={isSubmittingAmount}
                       onChange={(e) => {
@@ -285,7 +304,6 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
                       fullWidth
                       size="large"
                       sx={{ maxWidth: "300px", height: "56px" }}
-                      disabled={!amountIsValid(amount) || isSubmittingAmount}
                       onClick={() => {
                         connect();
                       }}

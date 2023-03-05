@@ -10,6 +10,7 @@ export interface Product {
   risk: "High" | "Medium" | "Low";
   logo: string;
   category: "lending" | "lp" | "staking";
+  available?: boolean;
 }
 
 const products: Product[] = [
@@ -21,6 +22,7 @@ const products: Product[] = [
     risk: "Low",
     logo: aaveLogo,
     category: "lending",
+    available: true,
   },
   {
     id: 1,

@@ -46,7 +46,7 @@ const InvestmentsSections: React.FC<{}> = () => {
           My Purchases
         </Typography>
       </Box>
-      <Divider />
+      <Divider sx={{ mb: "32px" }} />
       {investments.length === 0 ? (
         <>
           <Typography
@@ -61,7 +61,7 @@ const InvestmentsSections: React.FC<{}> = () => {
           </Typography>
         </>
       ) : undefined}
-      <Stack pt={"32px"} spacing={2} direction="row" flexWrap="wrap">
+      <Stack direction="row" flexWrap="wrap">
         {investments.map((investment, i) => {
           return <InvestmentCard key={i} investmentId={investment._hex} />;
         })}

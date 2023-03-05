@@ -49,7 +49,7 @@ const InvestmentCard: FC<Props> = ({ investmentId }) => {
     : null;
 
   return (
-    <Box mb={4}>
+    <Box mb={2} mr={2}>
       <Card sx={{ width: 300, pt: 2, textAlign: "center" }}>
         <CardContent>
           <Box sx={{ textAlign: "center" }} mb={2}>
