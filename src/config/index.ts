@@ -7,7 +7,7 @@ const config = {
   apiUrl: (path: string) => {
     const baseUrl = window.location.host.includes("localhost")
       ? "http://localhost:8080"
-      : "";
+      : "https://sugarcane.herokuapp.com";
     return `${baseUrl}${path}`;
   },
 };
