@@ -1,4 +1,6 @@
 import { useState, FC } from "react";
+import { useAccount, useContractRead } from "wagmi";
+import { BigNumber } from "ethers";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -15,26 +17,37 @@ import {
   OutlinedInput,
 } from "@mui/material";
 
-import config from "../../../config";
-import productsConfig from "../../../config/products";
 import Modal from "../../../components/modal/Modal";
-
-export interface Investment {
-  chainId: number;
-  protocolId: number;
-  initialAmountUsd: number;
-}
+import productsConfig from "../../../config/products";
+import config from "../../../config";
+import sugarcaneInvestmentRegistryAbi from "../../../contracts/sugarcaneInvestmentRegistryAbi";
 
 const aaveConfig = productsConfig[0]; // hard coded to be AAVE
 
 interface Props {
-  investment: Investment;
+  investmentId: string;
 }
 
-const InvestmentCard: FC<Props> = ({ investment }) => {
+const InvestmentCard: FC<Props> = ({ investmentId }) => {
   const [showModal, setShowModal] = useState(false);
   const { name, logo, description } = aaveConfig;
-  const { initialAmountUsd } = investment;
+
+  const {
+    data: _investment,
+    isError,
+    isLoading,
+    error,
+  } = useContractRead({
+    //@ts-ignore
+    address: config.sugarcaneInvestmentRegistryAddress,
+    abi: sugarcaneInvestmentRegistryAbi,
+    functionName: "investmentDetails",
+    args: [investmentId],
+  });
+
+  const initialAmountUsd = _investment
+    ? BigNumber.from((_investment as any[])[2]).toNumber()
+    : null;
 
   return (
     <>

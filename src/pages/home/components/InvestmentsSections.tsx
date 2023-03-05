@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 
-import InvestmentCard, { Investment } from "./InvestmentCard";
+import InvestmentCard from "./InvestmentCard";
 
 import config from "../../../config";
 import sugarcaneInvestmentRegistryAbi from "../../../contracts/sugarcaneInvestmentRegistryAbi";
@@ -27,7 +27,7 @@ const InvestmentsSections: React.FC<{}> = () => {
 
   console.log({ _investments, isError, isLoading, error });
 
-  const investments = (_investments || []) as Investment[];
+  const investments = (_investments || []) as { _hex: string }[];
 
   return (
     <Box mb={8}>
@@ -43,7 +43,7 @@ const InvestmentsSections: React.FC<{}> = () => {
             fontWeight: 600,
           }}
         >
-          My Portfolio
+          My Assets
         </Typography>
       </Box>
       <Divider />
@@ -63,7 +63,8 @@ const InvestmentsSections: React.FC<{}> = () => {
       ) : undefined}
       <Box pt={"32px"}>
         {investments.map((investment, i) => {
-          return <InvestmentCard key={i} investment={investment} />;
+          console.log({ investment });
+          return <InvestmentCard key={i} investmentId={investment._hex} />;
         })}
       </Box>
     </Box>
