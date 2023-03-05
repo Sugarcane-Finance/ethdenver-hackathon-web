@@ -14,7 +14,7 @@ interface Props {
 
 const FinancialProductCard: FC<Props> = ({ product }) => {
   const [showModal, setShowModal] = useState(false);
-  const { name, yield: yieldPercent, description, risk, logo } = product;
+  const { name, yield: yieldPercent, risk, logo } = product;
 
   return (
     <>

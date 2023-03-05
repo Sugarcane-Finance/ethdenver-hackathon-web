@@ -33,7 +33,7 @@ const HomePage: React.FC<{}> = () => {
       console.log("doing it");
       onboard(address);
     }
-  }, [hasOnboarded]);
+  }, [hasOnboarded, address, isOnboarding]);
 
   console.log({ hasOnboarded });
 
