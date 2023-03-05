@@ -1,6 +1,5 @@
 import { useState, FC } from "react";
 import { useAccount, useConnect, useSignMessage } from "wagmi";
-import { verifyMessage } from "ethers/lib/utils";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -47,8 +46,7 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
   const [isSubmittingAmount, setIsSubmittingAmount] = useState(false);
   const { name, yield: yieldPercent, description, risk, logo } = product;
   const { signMessage } = useSignMessage({
-    async onSuccess(data, variables) {
-      const address_ = verifyMessage(variables.message, data);
+    async onSuccess(data, _variables) {
       try {
         await executeTransaction({
           address: address || "",
@@ -85,13 +83,13 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
         encryptedData: encryptRes.encryptedData,
       });
 
-      const paymentRes = await createCirclePayment({
+      await createCirclePayment({
         amount,
         cardId: cardRes.id,
         address: address || "",
       });
 
-      signMessage({ message: "temp\nmessage\ntest: 0001" });
+      signMessage({ message: `Purchase: AAVE; Amount: $${amount}` });
     } catch (e: any) {
       window.alert(e?.message || e);
       setIsSubmittingAmount(false);

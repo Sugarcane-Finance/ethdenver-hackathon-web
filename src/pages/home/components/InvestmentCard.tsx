@@ -1,5 +1,5 @@
 import { useState, FC } from "react";
-import { useAccount, useContractRead } from "wagmi";
+import { useContractRead } from "wagmi";
 import { BigNumber } from "ethers";
 
 import Box from "@mui/material/Box";
@@ -7,7 +7,6 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import CircularProgress from "@mui/material/CircularProgress";
 import Grid from "@mui/material/Grid";
 import {
   Divider,
@@ -34,9 +33,9 @@ const InvestmentCard: FC<Props> = ({ investmentId }) => {
 
   const {
     data: _investment,
-    isError,
-    isLoading,
-    error,
+    // isError,
+    // isLoading,
+    // error,
   } = useContractRead({
     //@ts-ignore
     address: config.sugarcaneInvestmentRegistryAddress,

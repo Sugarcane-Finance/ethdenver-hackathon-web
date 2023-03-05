@@ -24,9 +24,9 @@ const Badge: React.FC<Props> = ({ badgeId, owned }) => {
 
   const {
     data: _badge,
-    isError,
-    isLoading,
-    error,
+    // isError,
+    // isLoading,
+    // error,
   } = useContractRead({
     //@ts-ignore
     address: config.sugarcaneBadgeAddress,

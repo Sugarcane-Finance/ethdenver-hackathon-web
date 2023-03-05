@@ -8,7 +8,7 @@ interface ExecuteTransactionParams {
 const executeTransaction = async (
   params: ExecuteTransactionParams
 ): Promise<void> => {
-  const result = await fetch(config.apiUrl("/execute-transaction"), {
+  await fetch(config.apiUrl("/execute-transaction"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

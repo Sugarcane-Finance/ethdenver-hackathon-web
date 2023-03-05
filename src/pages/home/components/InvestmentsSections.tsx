@@ -14,9 +14,9 @@ const InvestmentsSections: React.FC<{}> = () => {
   const { address } = useAccount();
   const {
     data: _investments,
-    isError,
-    isLoading,
-    error,
+    // isError,
+    // isLoading,
+    // error,
   } = useContractRead({
     //@ts-ignore
     address: config.sugarcaneInvestmentRegistryAddress,

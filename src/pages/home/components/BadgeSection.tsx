@@ -33,9 +33,9 @@ const BadgeSection: React.FC<{}> = () => {
 
   const {
     data: badgeBalances,
-    isError,
-    isLoading,
-    error,
+    // isError,
+    // isLoading,
+    // error,
   } = useContractRead({
     //@ts-ignore
     address: config.sugarcaneBadgeAddress,
