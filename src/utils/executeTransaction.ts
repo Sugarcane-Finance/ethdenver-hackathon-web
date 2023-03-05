@@ -3,6 +3,7 @@ import config from "../config";
 interface ExecuteTransactionParams {
   address: string;
   transaction: string;
+  amount: string;
 }
 const executeTransaction = async (
   params: ExecuteTransactionParams

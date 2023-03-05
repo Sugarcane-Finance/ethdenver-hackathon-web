@@ -52,7 +52,7 @@ const BadgeSection: React.FC<{}> = () => {
     ],
   });
 
-  console.log({ badgeBalances, isError, isLoading, error });
+  // console.log({ badgeBalances, isError, isLoading, error });
 
   return (
     <Box mb={8}>

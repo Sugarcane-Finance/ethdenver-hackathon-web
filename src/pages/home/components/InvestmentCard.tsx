@@ -1,6 +1,4 @@
 import { useState, FC } from "react";
-import { useAccount, useConnect, useSignMessage } from "wagmi";
-import { verifyMessage } from "ethers/lib/utils";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -16,13 +14,10 @@ import {
   InputLabel,
   OutlinedInput,
 } from "@mui/material";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
+import config from "../../../config";
 import productsConfig from "../../../config/products";
 import Modal from "../../../components/modal/Modal";
-import amountIsValid from "../../../utils/amountIsValid";
 
 export interface Investment {
   chainId: number;
@@ -73,7 +68,7 @@ const InvestmentCard: FC<Props> = ({ investment }) => {
                   setShowModal(true);
                 }}
               >
-                Buy
+                Buy More
               </Button>
             </Grid>
             <Grid item xs={6}>

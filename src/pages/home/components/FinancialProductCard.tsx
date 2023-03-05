@@ -51,7 +51,11 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
       const address_ = verifyMessage(variables.message, data);
       console.log({ address, address_, variables });
       try {
-        await executeTransaction({ address: address || "", transaction: data });
+        await executeTransaction({
+          address: address || "",
+          transaction: data,
+          amount,
+        });
         setSuccessfullyInvested(true);
         setIsSubmittingAmount(false);
       } catch (e: any) {

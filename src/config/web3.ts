@@ -1,11 +1,12 @@
 import { createClient } from "wagmi";
 import { configureChains } from "wagmi";
-import { baseGoerli } from "wagmi/chains";
+import { baseGoerli, hardhat } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
+// import { infuraProvider } from "wagmi/providers/infura";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [baseGoerli],
+  [baseGoerli, hardhat],
   [publicProvider()] // TODO use infura
 );
 

@@ -1,17 +1,33 @@
 import React from "react";
+import { useAccount, useContractRead } from "wagmi";
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
+
 import InvestmentCard, { Investment } from "./InvestmentCard";
 
+import config from "../../../config";
+import sugarcaneInvestmentRegistryAbi from "../../../contracts/sugarcaneInvestmentRegistryAbi";
+
 const InvestmentsSections: React.FC<{}> = () => {
-  const [investments] = React.useState<Investment[]>([
-    {
-      chainId: 1,
-      protocolId: 1,
-      initialAmountUsd: 1000,
-    },
-  ]);
+  const { address } = useAccount();
+  const {
+    data: _investments,
+    isError,
+    isLoading,
+    error,
+  } = useContractRead({
+    //@ts-ignore
+    address: config.sugarcaneInvestmentRegistryAddress,
+    abi: sugarcaneInvestmentRegistryAbi,
+    functionName: "investments",
+    args: [address],
+  });
+
+  console.log({ _investments, isError, isLoading, error });
+
+  const investments = (_investments || []) as Investment[];
 
   return (
     <Box mb={8}>
