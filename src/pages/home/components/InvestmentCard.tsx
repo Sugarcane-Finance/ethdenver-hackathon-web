@@ -16,6 +16,7 @@ import {
   OutlinedInput,
 } from "@mui/material";
 
+import ModalBuyAsset from "./ModalBuyAsset";
 import Modal from "../../../components/modal/Modal";
 import productsConfig from "../../../config/products";
 import config from "../../../config";
@@ -28,7 +29,8 @@ interface Props {
 }
 
 const InvestmentCard: FC<Props> = ({ investmentId }) => {
-  const [showModal, setShowModal] = useState(false);
+  const [showBuyModal, setShowBuyModal] = useState(false);
+  const [showSellModal, setShowSellModal] = useState(false);
   const { name, logo, description } = aaveConfig;
 
   const {
@@ -77,7 +79,7 @@ const InvestmentCard: FC<Props> = ({ investmentId }) => {
                 fullWidth
                 sx={{ maxWidth: "300px", mt: 4 }}
                 onClick={() => {
-                  setShowModal(true);
+                  setShowBuyModal(true);
                 }}
               >
                 Buy More
@@ -89,7 +91,7 @@ const InvestmentCard: FC<Props> = ({ investmentId }) => {
                 fullWidth
                 sx={{ maxWidth: "300px", mt: 4 }}
                 onClick={() => {
-                  setShowModal(true);
+                  setShowSellModal(true);
                 }}
               >
                 Sell
@@ -98,7 +100,12 @@ const InvestmentCard: FC<Props> = ({ investmentId }) => {
           </Grid>
         </CardContent>
       </Card>
-      <Modal open={showModal} setOpen={setShowModal}>
+      <ModalBuyAsset
+        product={aaveConfig}
+        showModal={showBuyModal}
+        setShowModal={setShowBuyModal}
+      />
+      <Modal open={showSellModal} setOpen={setShowSellModal}>
         <Box>
           <Box sx={{ textAlign: "center" }} mb={2}>
             <img
