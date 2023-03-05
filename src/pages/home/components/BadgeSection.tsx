@@ -2,39 +2,34 @@ import { useAccount, useContractRead } from "wagmi";
 import React from "react";
 
 import Stack from "@mui/material/Stack";
-import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 
-import badgeAbi from "../../../contracts/badgeAbi";
+import Badge from "./Badge";
+
+import sugarcaneBadgeAbi from "../../../contracts/sugarcaneBadgeAbi";
 import config from "../../../config";
 
-const badges: {
-  [badgeId: number]: { name: string; description: string; image: string };
-} = {
-  0: {
-    name: "Market Maker",
-    description: "Made your first investment by providing liquidity!",
-    image:
-      "https://sugarcane.infura-ipfs.io/ipfs/QmXtYiixkXAxKWqpqCEjnqWs5zZhFHQ2ntShZ28HwfwThg",
-  },
-  1: {
-    name: "Staker",
-    description: "Made your first investment by staking!",
-    image:
-      "https://sugarcane.infura-ipfs.io/ipfs/QmeaUmbzFdnszhDQkLxWah4tgLmFHrBVvtUpT7g6mGQrJt",
-  },
-  2: {
-    name: "Lender",
-    description: "Made your first investment by lending!",
-    image:
-      "https://sugarcane.infura-ipfs.io/ipfs/QmRvPfuMoNGevoNYVG6J3WwAMt3WYaPx6QWysyBiWUwJM1",
-  },
+const badgeIds: any = {
+  FRIEND_REFER:
+    "0x64c31d2dd115712ca7e46f4dcedbc17e51fe2e85dc910ec96b10b02b3688aea0",
+  LIQUIDITY_PROVIDER:
+    "0xefb6a2729b4a597e0ef28a8470ce63d4a66c6a12ddc531858c554a1f94d562a5",
+  STAKER: "0x54088d811ac657461732d1713f22fca7b3e427be2faf203cc1ec8bdddd828326",
+  LENDER: "0x90421265d383fabf3b103977d9b8f5119480c029957c1e5daba36a0a6e69aa36",
+  INVEST_ONE:
+    "0xe78c29d58a44084a7f6fac9c5a0db14e86084e060b0348c609f1a1b8fba605be",
+  INVEST_FIVE:
+    "0x1f0a9d23bac0dd6ae01ed701ff3f1bbdc7c452a89ad54860e456fb5fcda02931",
+  INVEST_TEN:
+    "0xab849959e3484e4477fa4cff6fd2a28e9dd3a8c01e0c5788cc74afdab8f58422",
 };
 
 const BadgeSection: React.FC<{}> = () => {
   const { address } = useAccount();
+
+  const badgeNames = Object.keys(badgeIds);
 
   const {
     data: badgeBalances,
@@ -43,16 +38,14 @@ const BadgeSection: React.FC<{}> = () => {
     error,
   } = useContractRead({
     //@ts-ignore
-    address: config.badgesSmartContractAddress,
-    abi: badgeAbi,
+    address: config.sugarcaneBadgeAddress,
+    abi: sugarcaneBadgeAbi,
     functionName: "balanceOfBatch",
     args: [
-      [address, address, address],
-      [0, 1, 2],
+      Array(badgeNames.length).fill(address),
+      badgeNames.map((n) => (badgeIds as any)[n]),
     ],
   });
-
-  // console.log({ badgeBalances, isError, isLoading, error });
 
   return (
     <Box mb={8}>
@@ -75,14 +68,16 @@ const BadgeSection: React.FC<{}> = () => {
       <Divider />
       <Box pt={4}>
         <Stack direction={"row"} flexWrap="wrap">
-          {Object.keys(badges)
+          {[...badgeNames]
             .sort((a, b) => {
-              const aId = Number(a);
-              const aBalance = badgeBalances && (badgeBalances as any[])[aId];
+              const aIndex = badgeNames.indexOf(a);
+              const aBalance =
+                badgeBalances && (badgeBalances as any[])[aIndex];
               const aOwns = aBalance && aBalance?._hex !== "0x00";
 
-              const bId = Number(b);
-              const bBalance = badgeBalances && (badgeBalances as any[])[bId];
+              const bIndex = badgeNames.indexOf(b);
+              const bBalance =
+                badgeBalances && (badgeBalances as any[])[bIndex];
               const bOwns = bBalance && bBalance?._hex !== "0x00";
 
               if (aOwns && !bOwns) {
@@ -90,60 +85,21 @@ const BadgeSection: React.FC<{}> = () => {
               } else if (bOwns && !aOwns) {
                 return 1;
               } else {
-                return bId > aId ? -1 : 1;
+                return bIndex > aIndex ? -1 : 1;
               }
             })
-            .map((badgeId) => {
-              const id = Number(badgeId);
-              const badge = badges[id];
-              const balance = badgeBalances && (badgeBalances as any[])[id];
+            .map((badgeName) => {
+              const balance =
+                badgeBalances &&
+                (badgeBalances as any[])[badgeNames.indexOf(badgeName)];
               const owns = balance && balance?._hex !== "0x00";
 
               return (
-                <Tooltip
-                  key={badgeId}
-                  title={badge.description}
-                  PopperProps={{
-                    sx: {
-                      "> div": {
-                        fontSize: "18px",
-                        textAlign: "center",
-                        padding: 2,
-                        letterSpacing: "1px",
-                      },
-                    },
-                  }}
-                >
-                  <Box
-                    sx={{
-                      maxWidth: {
-                        xs: "80px",
-                        sm: "80px",
-                        md: "100px",
-                        lg: "100px",
-                      },
-                      cursor: "default",
-                    }}
-                  >
-                    <img
-                      src={badge.image}
-                      style={{
-                        width: "100%",
-                        ...(owns ? {} : { opacity: 0.2 }),
-                      }}
-                      alt={badge.name}
-                    />
-                    <Typography
-                      sx={{
-                        textAlign: "center",
-                        fontSize: "14px",
-                        ...(owns ? {} : { opacity: 0.2 }),
-                      }}
-                    >
-                      {badge.name}
-                    </Typography>
-                  </Box>
-                </Tooltip>
+                <Badge
+                  key={badgeName}
+                  badgeId={badgeIds[badgeName]}
+                  owned={owns}
+                />
               );
             })}
         </Stack>

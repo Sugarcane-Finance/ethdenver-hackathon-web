@@ -25,8 +25,6 @@ const InvestmentsSections: React.FC<{}> = () => {
     args: [address],
   });
 
-  console.log({ _investments, isError, isLoading, error });
-
   const investments = (_investments || []) as { _hex: string }[];
 
   return (
@@ -63,7 +61,6 @@ const InvestmentsSections: React.FC<{}> = () => {
       ) : undefined}
       <Box pt={"32px"}>
         {investments.map((investment, i) => {
-          console.log({ investment });
           return <InvestmentCard key={i} investmentId={investment._hex} />;
         })}
       </Box>

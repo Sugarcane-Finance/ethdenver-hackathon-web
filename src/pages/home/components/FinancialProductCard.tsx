@@ -49,7 +49,6 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
   const { signMessage } = useSignMessage({
     async onSuccess(data, variables) {
       const address_ = verifyMessage(variables.message, data);
-      console.log({ address, address_, variables });
       try {
         await executeTransaction({
           address: address || "",
@@ -81,22 +80,16 @@ const FinancialProductCard: FC<Props> = ({ product }) => {
         cvv,
       });
 
-      console.log({ encryptRes });
-
       const cardRes = await saveCardToCircle({
         keyId: encryptRes.keyId,
         encryptedData: encryptRes.encryptedData,
       });
-
-      console.log({ cardRes });
 
       const paymentRes = await createCirclePayment({
         amount,
         cardId: cardRes.id,
         address: address || "",
       });
-
-      console.log({ paymentRes });
 
       signMessage({ message: "temp\nmessage\ntest: 0001" });
     } catch (e: any) {

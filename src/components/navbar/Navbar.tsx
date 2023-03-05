@@ -17,7 +17,6 @@ import * as blockies from "../../utils/blockies";
 const Navbar: React.FC<{}> = () => {
   const { chain } = useNetwork();
 
-  console.log({ chain });
   const { address, isConnected } = useAccount();
   const { connect } = useConnect({
     connector,

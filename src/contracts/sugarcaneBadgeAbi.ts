@@ -78,6 +78,31 @@ const abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: true,
+        internalType: "address",
+        name: "sugarcaneAdmin",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "oldManagerAddress",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newManagerAddress",
+        type: "address",
+      },
+    ],
+    name: "ManagerUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: false,
         internalType: "address",
         name: "account",
@@ -282,6 +307,122 @@ const abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "admin",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "oldUriPrefix",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "newUriPrefix",
+        type: "string",
+      },
+    ],
+    name: "UriPrefixUpdated",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "BADGE_ID_FRIEND_REFER",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "BADGE_ID_INVEST_FIVE",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "BADGE_ID_INVEST_ONE",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "BADGE_ID_INVEST_TEN",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "BADGE_ID_LENDER",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "BADGE_ID_LIQUIDITY_PROVIDER",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "BADGE_ID_STAKER",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "DEFAULT_ADMIN_ROLE",
     outputs: [
@@ -296,7 +437,7 @@ const abi = [
   },
   {
     inputs: [],
-    name: "LENDER",
+    name: "PROTOCOL_ID_AAVE",
     outputs: [
       {
         internalType: "uint256",
@@ -309,7 +450,7 @@ const abi = [
   },
   {
     inputs: [],
-    name: "MARKET_MAKER",
+    name: "PROTOCOL_ID_SSV_LIQUID_STAKING",
     outputs: [
       {
         internalType: "uint256",
@@ -322,7 +463,7 @@ const abi = [
   },
   {
     inputs: [],
-    name: "STAKER",
+    name: "PROTOCOL_ID_UNISWAP",
     outputs: [
       {
         internalType: "uint256",
@@ -481,6 +622,11 @@ const abi = [
         name: "managerAddress_",
         type: "address",
       },
+      {
+        internalType: "string",
+        name: "uriPrefix_",
+        type: "string",
+      },
     ],
     name: "initialize",
     outputs: [],
@@ -513,7 +659,7 @@ const abi = [
   },
   {
     inputs: [],
-    name: "managerAddress",
+    name: "manager",
     outputs: [
       {
         internalType: "address",
@@ -708,7 +854,7 @@ const abi = [
         type: "address",
       },
     ],
-    name: "setManagerAddress",
+    name: "setManager",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
