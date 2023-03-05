@@ -28,7 +28,7 @@ const HomePage: React.FC<{}> = () => {
   });
 
   useEffect(() => {
-    if (address && hasOnboarded === true && !isOnboarding) {
+    if (address && hasOnboarded === false && !isOnboarding) {
       setIsOnboarding(true);
       console.log("doing it");
       onboard(address);
