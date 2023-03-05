@@ -11,7 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import GrassIcon from "@mui/icons-material/Grass";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
-import { connector } from "../../config/web3";
+import { coinbaseConnector as connector } from "../../config/web3";
 import * as blockies from "../../utils/blockies";
 
 const Navbar: React.FC<{}> = () => {
@@ -94,7 +94,7 @@ const Navbar: React.FC<{}> = () => {
             >
               {isConnected
                 ? `...${address?.substring(address?.length - 8)}`
-                : "Connect Coinbase Wallet"}
+                : "Connect Wallet"}
             </Typography>
             {address ? (
               <img

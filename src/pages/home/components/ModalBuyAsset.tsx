@@ -19,7 +19,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 import Modal from "../../../components/modal/Modal";
-import { connector } from "../../../config/web3";
+import { walletConnectConnector as connector } from "../../../config/web3";
 import { Product } from "../../../config/products";
 import amountIsValid from "../../../utils/amountIsValid";
 import encryptCardDetails from "../../../utils/encryptCardDetails";
